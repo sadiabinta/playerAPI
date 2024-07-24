@@ -1,5 +1,4 @@
 const allPlayer = (pName = '') => {
-  console.log(pName);
   fetch(
     `https://www.thesportsdb.com/api/v1/json/3/searchplayers.php?p=${pName}`
   )
@@ -10,13 +9,11 @@ const allPlayer = (pName = '') => {
 };
 
 const dispalyPlayer = (players) => {
-  console.log(players);
   const cardContainer = document.getElementById('card-container');
   cardContainer.innerHTML = '';
   players.forEach((player) => {
     const [name, rest] = player.strDescriptionEN.split('(');
     const div = document.createElement('div');
-    // console.log(player.strCutout);
     div.classList.add('col');
     div.innerHTML = `
     <div class="card">
@@ -58,9 +55,6 @@ const dispalyPlayer = (players) => {
 };
 
 const openModal = (player) => {
-  //   let data = singlePlayer();
-  //   console.log(player);
-  //   console.log(player.strDescriptionEN);
   const myModal = document.getElementById('my-modal');
   myModal.innerHTML = '';
 
@@ -98,11 +92,9 @@ const openModal = (player) => {
 </div>
     `;
   myModal.appendChild(div);
-  //   myModal.innerHTML = '';
 };
 
 const handleAddToCart = (name, dob, img, gender, button) => {
-  console.log(name, dob, img, gender);
   let total = parseInt(document.getElementById('total').innerText);
   let male = parseInt(document.getElementById('male').innerText);
   let female = parseInt(document.getElementById('female').innerText);
@@ -114,7 +106,6 @@ const handleAddToCart = (name, dob, img, gender, button) => {
     document.getElementById('total').innerText = total += 1;
   }
   if (gender.trim().toLowerCase() === 'male') {
-    console.log(gender);
     male += 1;
     document.getElementById('male').innerText = male;
   } else {
@@ -130,20 +121,34 @@ const handleAddToCart = (name, dob, img, gender, button) => {
     'align-items-center'
   );
   list.innerHTML = `
-  <div class="ms-2 me-auto d-flex justify-content-evenly align-items-center">
+  <div class="ms-2 me-auto d-flex justify-content-center align-items-center">
                 <div class="fw-bold">${name}</div>
                 <img  src="${img}" class="cart-img rounded-circle mw-25">
+                <button onclick="removeFromCart(this,'${gender}')" type="button" class="btn btn-danger">X</button>
               </div>
   `;
   cart.appendChild(list);
-
-  //   let button = document.getElementById('addBtn');
   button.innerText = 'Already Added';
   button.disabled = true;
 };
+const removeFromCart = (button, gender) => {
+  const listItem = button.parentElement.parentElement;
+  listItem.remove();
+
+  let total = parseInt(document.getElementById('total').innerText);
+  let male = parseInt(document.getElementById('male').innerText);
+  let female = parseInt(document.getElementById('female').innerText);
+
+  document.getElementById('total').innerText = total -= 1;
+  if (gender.trim().toLowerCase() === 'male') {
+    male -= 1;
+    document.getElementById('male').innerText = male;
+  } else {
+    document.getElementById('female').innerText = female -= 1;
+  }
+};
 
 const singlePlayer = (id) => {
-  console.log(id);
   fetch(`https://www.thesportsdb.com/api/v1/json/3/lookupplayer.php?id=${id}`)
     .then((res) => res.json())
     .then((data) => {
@@ -154,6 +159,7 @@ const singlePlayer = (id) => {
       myModal.show();
     });
 };
+
 const searchPlayers = () => {
   const searchTerm = document.getElementById('searchInput').value.toLowerCase();
   console.log(searchTerm);
